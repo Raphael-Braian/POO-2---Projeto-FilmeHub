@@ -1,0 +1,106 @@
+Filme {
+    shape: class
+    -anoLancamento: Date
+}
+
+Serie {
+    shape: class
+    -anoInicio: Date
+    -anoTermino: Date
+}
+
+Conteudo {
+    shape: class
+    -titulo: String
+    -genero: String
+}
+
+Conteudo -> Filme
+Conteudo -> Serie  
+
+Pessoa {
+    shape: class
+    -nome: String
+    -nascimento: Date
+    -paisOrigem: String
+    -filmes: List<Filme>
+}
+
+Diretor {
+    shape: class
+    dirigidos
+}
+
+Ator {
+    shape: class
+}
+
+Pessoa -> Ator 
+Pessoa -> Diretor 
+
+
+Usuario {
+    shape: class
+    -nome: String
+    -senha: String
+    -email: String
+    -dataRegistro: Date
+    -reviews: List<Review>
+    -Avaliacoes: List<Avaliacao>
+    -comentarios: List<Comentario>
+}
+
+Usuario -> Avaliacao
+Usuario -> Review
+
+Avaliacao {
+    shape: class
+    -valor: int
+}
+
+Moderador {
+    shape: class
+    -historicoEdicoes: List<Edicao>
+}
+
+Critico {
+    shape: class
+}
+
+Edicao {
+    shape: class
+    -moderador: Moderador
+    -alvo: Conteudo
+    -diff: String
+}
+
+Postagem {
+    shape: class
+    -usuario: Usuario
+    -texto: String
+    -date: Date
+}
+
+Review {
+    shape: class
+    -nota: int
+    -comentarios: List<comentarios>
+}
+
+Comentario {
+    shape: class
+}
+
+Postagem -> Review
+Postagem -> Comentario
+
+Moderador -> Usuario
+Critico -> Usuario
+
+Moderador -> Edicao
+
+Rank {
+    shape: class
+    -top: List<conteudo>
+    -ultimaAtualizacao: Date
+}
