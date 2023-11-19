@@ -83,7 +83,7 @@ titulo|ano|duracao|idade|nota
 82. Gênio Indomável|1997|126|14|8.3
 83. Your Name.|2016|106|0|8.4
 84. Era uma Vez na América|1984|229|18|8.3
-85. Céu E Inferno|1963|143|Not Rated|8.4
+85. Céu E Inferno|1963|143|0|8.4
 86. 3 Idiotas|2009|170|12|8.4
 87. Cantando na Chuva|1952|103|0|8.3
 88. Cafarnaum|2018|126|16|8.4
@@ -95,7 +95,7 @@ titulo|ano|duracao|idade|nota
 94. 2001: Uma Odisséia no Espaço|1968|149|0|8.3
 95. A Caça|2012|115|14|8.3
 96. Cães de Aluguel|1992|99|18|8.3
-97. Viver|1952|143|Not Rated|8.3
+97. Viver|1952|143|0|8.3
 98. Lawrence da Arábia|1962|218|14|8.3
 99. Se Meu Apartamento Falasse|1960|125|0|8.3
 100. Cidadão Kane|1941|119|0|8.3
@@ -106,7 +106,7 @@ titulo|ano|duracao|idade|nota
 105. O Fabuloso Destino de Amélie Poulain|2001|122|14|8.3
 106. Scarface|1983|170|18|8.3
 107. Nascido para Matar|1987|116|16|8.3
-108. Laranja Mecânica|1971|136|(Banned)|8.3
+108. Laranja Mecânica|1971|136|0|8.3
 109. Incêndios|2010|131|14|8.3
 110. Fogo Contra Fogo|1995|170|14|8.3
 111. Up: Altas Aventuras|2009|96|0|8.3
@@ -134,7 +134,7 @@ titulo|ano|duracao|idade|nota
 133. Meu Pai|2020|97|12|8.2
 134. Green Book: O Guia|2018|130|12|8.2
 135. A Malvada|1950|138|0|8.2
-136. Julgamento em Nuremberg|1961|179|Approved|8.3
+136. Julgamento em Nuremberg|1961|179|0|8.3
 137. O Show de Truman: O Show da Vida|1998|103|12|8.2
 138. Sangue Negro|2007|158|14|8.2
 139. Cassino|1995|178|18|8.2
@@ -197,7 +197,7 @@ titulo|ano|duracao|idade|nota
 196. O 3º Homem|1949|104|14|8.1
 197. O Salário do Medo|1953|131|16|8.2
 198. Sociedade dos Poetas Mortos|1989|128|12|8.1
-199. Bancando o Águia|1924|2700|Passed|8.2
+199. Bancando o Águia|1924|2700|0|8.2
 200. Mad Max: Estrada da Fúria|2015|120|16|8.1
 201. Monstros S.A.|2001|92|0|8.1
 202. A Mulher Faz o Homem|1939|129|0|8.1
@@ -214,10 +214,10 @@ titulo|ano|duracao|idade|nota
 213. Hotel Ruanda|2004|121|14|8.1
 214. Logan|2017|137|16|8.1
 215. Spotlight: Segredos Revelados|2015|129|12|8.1
-216. Platoon|1986|120|14|8.1
-217. O Martírio de Joana D'Arc|1928|110|14|8.1
+216. O Martírio de Joana D'Arc|1928|110|14|8.1
+217. Platoon|1986|120|14|8.1
 218. O Exterminador do Futuro|1984|107|14|8.1
-219. Jai Bhim|2021|164|TV-MA|8.8
+219. Jai Bhim|2021|164|0|8.8
 220. Antes do Pôr do Sol|2004|80|12|8.1
 221. Rush: No Limite da Emoção|2013|123|14|8.1
 222. Rede de Intrigas|1976|121|14|8.1
@@ -225,11 +225,11 @@ titulo|ano|duracao|idade|nota
 224. Os Melhores Anos de Nossa Vida|1946|170|0|8.1
 225. Conta Comigo|1986|89|12|8.1
 226. O Ódio|1995|98|16|8.1
-227. Piratas do Caribe: A Maldição do Pérola Negra|2003|143|14|8.1
-228. O Mágico de Oz|1939|102|0|8.1
+227. O Mágico de Oz|1939|102|0|8.1
+228. Piratas do Caribe: A Maldição do Pérola Negra|2003|143|14|8.1
 229. Os Incríveis|2004|115|0|8.0
 230. Na Natureza Selvagem|2007|148|12|8.1
-231. Meu Pai e Meu Filho|2005|112|Not Rated|8.2
+231. Meu Pai e Meu Filho|2005|112|0|8.2
 232. Sempre ao Seu Lado|2009|93|0|8.1
 233. A Criada|2016|145|18|8.1
 234. Ser ou Não Ser|1942|99|0|8.2

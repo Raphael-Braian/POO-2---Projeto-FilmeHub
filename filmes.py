@@ -89,7 +89,10 @@ for i in top:
     nota = nota.split('\xa0')[0]
     # não sei o porque desse caractere no lugar do que seria um espaço
 
-    idade = 0 if idade == 'Livre' else idade
+    if idade in ['Livre', 'Not Rated', 'Approved', 'Passed', 'TV-MA']:
+        idade = 0
+    elif idade == '(Banned)':
+        idade = 18
 
     filmes.append(filme(titulo, ano, duracao, idade, nota))
 

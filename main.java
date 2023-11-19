@@ -12,27 +12,31 @@ import java.util.List;
 class Conteudo{
     String titulo;
     String genero;
-    String faixaEtaria;
-    boolean avaliacaoMedia;
+    int faixaEtaria;
+    float avaliacaoMedia;
     //Considerar acrescentar uma variavel lista de atores//
 
-    public Conteudo(String titulo, String genero, String faixaEtaria,
-            boolean avaliacaoMedia)
+    public Conteudo(String titulo, String genero, int faixaEtaria,
+            float avaliacaoMedia)
     {
         this.titulo = titulo;
         this.genero = genero;
         this.faixaEtaria = faixaEtaria;
         this.avaliacaoMedia = avaliacaoMedia;
     }
+
+    public String toString() {
+        return titulo;
+    }
 }
 
 class Filme extends Conteudo{
-    Date anoLancamento;
+    int anoLancamento;
     boolean bilheteria;
-    boolean duracaoEstimada;
+    int duracaoEstimada;
 
-    public Filme(String titulo, String genero, String faixaEtaria, boolean avaliacaoMedia,
-            Date anoLancamento, boolean bilheteria, boolean duracaoEstimada)
+    public Filme(String titulo, String genero, int faixaEtaria, float avaliacaoMedia,
+            int anoLancamento, boolean bilheteria, int duracaoEstimada)
     {
         super(titulo, genero, faixaEtaria, avaliacaoMedia);
         this.anoLancamento = anoLancamento;
@@ -45,8 +49,8 @@ class Serie extends Conteudo{
     Date anoTermino;
     int qtdTemporadas;
 
-    public Serie(String titulo, String genero, String faixaEtaria, 
-            boolean avaliacaoMedia, Date anoInicio, Date anoTermino, int qtdTemporadas)
+    public Serie(String titulo, String genero, int faixaEtaria, 
+            float avaliacaoMedia, Date anoInicio, Date anoTermino, int qtdTemporadas)
     {
         super(titulo, genero, faixaEtaria, avaliacaoMedia);
         this.anoInicio = anoInicio;
@@ -158,26 +162,21 @@ class main {
         {
             String linha = filmesCSV.get(i);
             // separa linha pelas virgulas
-            String[] colunas = linha.split("|");
+            String[] colunas = linha.split("\\|");
 
             // formato do csv:
             // titulo|ano|duracao|idade|avaliacao
             String titulo = colunas[0];
             int ano = Integer.parseInt(colunas[1]);
-            String duracao = colunas[2];
-            int idade = colunas[3];
+            int duracao = Integer.parseInt(colunas[2]); // duração em minutos
+            int idade = Integer.parseInt(colunas[3]);
+            float avaliacao = Float.parseFloat(colunas[4]);
 
-            Date registro = new Date((long) Integer.parseInt(colunas[4]) * 1000);
-            // O construtor de Date aceita unix timestamp em milisegundos para 
-            // definir uma data.
-            // unix timestamp é definido pelo numero de segundos desde primeiro 
-            // de janeiro de 1970
-            // https://www.unixtimestamp.com/index.php
-
-            usuarios.add(new Usuario(nome, senha, idade, email, registro));
+    
+            filmes.add(new Filme(titulo, "", idade, avaliacao, ano, false, duracao));
         }
 
-        for (Usuario i : usuarios) {
+        for (Filme i : filmes) {
             System.out.println(i);
         }
     }
