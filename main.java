@@ -20,7 +20,7 @@ class Conteudo{
             boolean avaliacaoMedia)
     {
         this.titulo = titulo;
-        this.genero = genero;    //Construtor de Conteudo//
+        this.genero = genero;
         this.faixaEtaria = faixaEtaria;
         this.avaliacaoMedia = avaliacaoMedia;
     }
@@ -98,13 +98,11 @@ class Usuario {
 }
 class main {
 
-    public static void main(String[] args) {
-        System.out.println("hello world");
-
-        // ler arquivo dataset.csv por linhas e salvar nesta array
+    // le qualquer csv
+    public static List<String> lerCsv(String arquivo) {
         List<String> linhas = new ArrayList<String>();
         try {
-            File file = new File("usuarios.csv");
+            File file = new File(arquivo);
             FileReader filereader = new FileReader(file);
             BufferedReader br = new BufferedReader(filereader);
             String line;
@@ -112,38 +110,75 @@ class main {
             while ((line = br.readLine()) != null) {
                 linhas.add(line);
             }
-
-
         } catch (Exception e) {
-            System.out.println("erro! arquivo não encontrado");
+            System.out.println("Erro: arquivo não encontrado!");
             e.printStackTrace();
         }
+        return linhas;
+    }
 
-        List<Usuario> usuarios = new ArrayList<Usuario>();
+    public static void main(String[] args) {
+        System.out.println("hello world");
 
-        // separar cada linha por colunas e salvar todos os candidatos em uma lista
-        for (int i = 1; i < linhas.size(); i++)
+        // ler datasets
+        var usuariosCSV = lerCsv("usuarios.csv");
+        var filmesCSV = lerCsv("filmes.csv");
+
+        var usuarios = new ArrayList<Usuario>();
+
+        // salvar todos os usuarios em uma lista
+        for (int i = 1; i < usuariosCSV.size(); i++)
         {
-            String linha = linhas.get(i);
+            String linha = usuariosCSV.get(i);
             // separa linha pelas virgulas
             String[] colunas = linha.split(",");
 
+            // formato do csv:
+            // nome,idade,senha,email,registro
             String nome = colunas[0];
             String senha = colunas[1];
             int idade = Integer.parseInt(colunas[2]);
             String email = colunas[3];
+
             Date registro = new Date((long) Integer.parseInt(colunas[4]) * 1000);
+            // O construtor de Date aceita unix timestamp em milisegundos para 
+            // definir uma data.
+            // unix timestamp é definido pelo numero de segundos desde primeiro 
+            // de janeiro de 1970
+            // https://www.unixtimestamp.com/index.php
 
-            var usuario = new Usuario(nome, senha, idade, email, registro);
+            usuarios.add(new Usuario(nome, senha, idade, email, registro));
+        }
 
-            // salvar candidato
-            usuarios.add(usuario);
+
+        var filmes = new ArrayList<Filme>();
+
+        // salvar todos os filmes em uma lista
+        for (int i = 1; i < filmesCSV.size(); i++)
+        {
+            String linha = filmesCSV.get(i);
+            // separa linha pelas virgulas
+            String[] colunas = linha.split("|");
+
+            // formato do csv:
+            // titulo|ano|duracao|idade|avaliacao
+            String titulo = colunas[0];
+            int ano = Integer.parseInt(colunas[1]);
+            String duracao = colunas[2];
+            int idade = colunas[3];
+
+            Date registro = new Date((long) Integer.parseInt(colunas[4]) * 1000);
+            // O construtor de Date aceita unix timestamp em milisegundos para 
+            // definir uma data.
+            // unix timestamp é definido pelo numero de segundos desde primeiro 
+            // de janeiro de 1970
+            // https://www.unixtimestamp.com/index.php
+
+            usuarios.add(new Usuario(nome, senha, idade, email, registro));
         }
 
         for (Usuario i : usuarios) {
             System.out.println(i);
         }
-
-        // Individuo foo = new Individuo();
     }
 }
