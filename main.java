@@ -77,12 +77,34 @@ class Individuo{
     }
 }
 
+class Ator extends Individuo {
+
+    Ator(String nome, Gender genero, Date nascimento, String paisDeOrigem) {
+        super(nome, genero, nascimento, paisDeOrigem);
+    }
+
+}
+
+class Diretor extends Individuo {
+
+    List<Filme> filmesDirigidos;
+
+    Diretor(String nome, Gender genero, Date nascimento, String paisDeOrigem) {
+        super(nome, genero, nascimento, paisDeOrigem);
+        this.filmesDirigidos = new ArrayList<Filme>();
+    }
+
+}
+
 class Usuario {
     String nome;
     String senha;
     String email;
     int idade;
     Date registro;
+    List<Comentario> comentarios;
+    List<Avaliacao> avaliacoes;
+    List<Review> reviews;
 
     Usuario(String nome, String senha, int idade, String email, Date registro)
     {
@@ -91,6 +113,9 @@ class Usuario {
         this.idade = idade;
         this.email = email;
         this.registro = registro;
+        this.comentarios = new ArrayList<Comentario>();
+        this.avaliacoes = new ArrayList<Avaliacao>();
+        this.reviews = new ArrayList<Review>();
     }
 
     public String toString() {
@@ -100,6 +125,83 @@ class Usuario {
     }
 
 }
+
+class Edicao {
+    Moderador moderador;
+    Conteudo alvo;
+    String diferenca;
+
+    Edicao(Moderador moderador, Conteudo alvo, String diferenca) {
+        this.moderador = moderador;
+        this.alvo = alvo;
+        this.diferenca = diferenca;
+    }
+}
+
+class Moderador extends Usuario {
+    List<Edicao> historicoEdicoes;
+
+    Moderador(String nome, String senha, int idade, String email, Date registro)
+    {
+        super(nome, senha, idade, email, registro);
+        this.historicoEdicoes = new ArrayList<Edicao>();
+    }
+}
+
+// o que por aqui?
+class Critico extends Usuario {
+
+    Critico(String nome, String senha, int idade, String email, Date registro) 
+    { 
+        super(nome, senha, idade, email, registro);
+    }
+}
+
+class Avaliacao {
+    Filme filme;
+    Usuario usuario;
+    float nota;
+
+    Avaliacao(Filme filme, Usuario usuario, float nota) {
+        this.filme = filme;
+        this.usuario = usuario;
+        this.nota = nota;
+    }
+}
+
+class Postagem {
+    Usuario usuario;
+    String texto;
+    Date data;
+
+    Postagem(Usuario usuario, String texto, Date data) {
+        this.usuario = usuario;
+        this.texto = texto;
+        this.data = data;
+    }
+}
+
+class Comentario extends Postagem {
+    Review review;
+
+    Comentario(Usuario usuario, String texto, Date data, Review review) {
+        super(usuario, texto, data);
+        this.review = review;
+    }
+}
+
+class Review extends Postagem {
+    float avaliacao;
+    List<Comentario> comentarios;
+
+    Review(Usuario usuario, String texto, Date data, float avaliacao) {
+        super(usuario, texto, data);
+        this.avaliacao = avaliacao;
+        this.comentarios = new ArrayList<Comentario>();
+    }
+}
+
+
 class main {
 
     // le qualquer csv
@@ -115,7 +217,7 @@ class main {
                 linhas.add(line);
             }
         } catch (Exception e) {
-            System.out.println("Erro: arquivo não encontrado!");
+            System.out.println("ERRO: arquivo não encontrado!");
             e.printStackTrace();
         }
         return linhas;
