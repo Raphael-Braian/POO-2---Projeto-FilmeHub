@@ -3,6 +3,7 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
+
 headers = {
         'authority': 'm.imbd.com',
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,\
@@ -38,29 +39,28 @@ class filme():
                 self.nota]
 
 
-req = requests.get('https://m.imdb.com/chart/top/?ref_=nv_mv_250')
+req = requests.get('https://m.imdb.com/chart/top/?ref_=nv_mv_250',
+                   headers=headers)
+
+# não tenho ideia do porque mas de vez em quando o request retorna 403
 if req.status_code != 200:
     print(req.status_code)
     sys.exit(1)
 
 soup = BeautifulSoup(req.content, 'html.parser')
 
-query = '#__next > main > div > div.ipc-pidade-content-container.\
-ipc-pidade-content-container--center > section > div > div.ipc-pidade-grid.\
-ipc-pidade-grid--bias-left > div > ul > li'
+with open('top250filmes.html', 'wb') as file:
+    file.write(req.content)
+
+query = 'div.ipc-page-grid.ipc-page-grid--bias-left > div > ul > li'
 
 top = soup.select(query)
+print(len(top))
 
-sel_titulo = 'div.ipc-metadata-list-summary-item__c > div > div > \
-div.ipc-titulo.ipc-titulo--base.ipc-titulo--titulo.ipc-titulo-\
-link-no-icon.ipc-titulo--on-textPrimary.sc-479faa3c-9.dkLVoC.cli-titulo \
-> a > h3'
-sel_ano = 'div.ipc-metadata-list-summary-item__c > div > div > \
-div.sc-479faa3c-7.jXgjdT.cli-titulo-metadata > span:nth-child(1)'
-sel_duracao = 'div.ipc-metadata-list-summary-item__c > div > div > \
-div.sc-479faa3c-7.jXgjdT.cli-titulo-metadata > span:nth-child(2)'
-sel_idade = 'div.ipc-metadata-list-summary-item__c > div > div > \
-div.sc-479faa3c-7.jXgjdT.cli-titulo-metadata > span:nth-child(3)'
+sel_titulo = 'a > h3'
+sel_ano = 'div.sc-479faa3c-7.jXgjdT.cli-title-metadata > span:nth-child(1)'
+sel_duracao = 'div > span:nth-child(2)'
+sel_idade = 'div > span:nth-child(3)'
 sel_nota = 'div.ipc-metadata-list-summary-item__c > div > div > span > \
 div > span'
 
@@ -77,8 +77,17 @@ for i in top:
     # ['2' '9']
     # 2*60 + 9
     # 129 minutos
-    duracao = duracao[:-1].split['h ']
-    duracao = int(duracao[0]) * 60 + int(duracao[1])
+    duracao = duracao[:-1].split('h ')
+    if len(duracao) == 2:
+        duracao = int(duracao[0]) * 60 + int(duracao[1])
+    else:
+        duracao = int(duracao[0]) * 60
+
+    # '10.0 (100K)'
+    # ['10.0' '(100K)']
+    # '10.0'
+    nota = nota.split('\xa0')[0]
+    # não sei o porque desse caractere no lugar do que seria um espaço
 
     idade = 0 if idade == 'Livre' else idade
 
