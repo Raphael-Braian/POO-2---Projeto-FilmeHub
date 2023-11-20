@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+// import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,6 +201,30 @@ class Review extends Postagem {
     }
 }
 
+interface Rank {
+    public void filtrarPorIdade(int idade);
+}
+
+class FilmeRank implements Rank {
+    List<Filme> filmes;
+
+    FilmeRank(ArrayList<Filme> filmes) {
+        this.filmes = filmes;
+    }
+    public void mostrarTodosFilmes() {
+        for (Filme i : this.filmes) {
+            System.out.println(i);
+        }
+    }
+    public void filtrarPorIdade(int idade) {
+        for (Filme i : this.filmes) {
+            if (i.faixaEtaria < idade) {
+                System.out.println(i);
+            }
+        }
+    }
+}
+
 
 class main {
 
@@ -278,8 +302,9 @@ class main {
             filmes.add(new Filme(titulo, "", idade, avaliacao, ano, false, duracao));
         }
 
-        for (Filme i : filmes) {
-            System.out.println(i);
-        }
+
+        var filmesRank = new FilmeRank(filmes);
+
+        filmesRank.filtrarPorIdade(12);
     }
 }
