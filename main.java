@@ -1,4 +1,11 @@
 
+
+
+// FilmesHub
+// trabalho feito por Daniel Augusto e Raphael Braian
+// para o curso de Ciências da Computação da Universidade Vila Velha.
+// CC3N
+
 import java.util.Date;
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +17,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Collections;
 import java.util.stream.Collectors;
+
+
+interface atributos {
+    public void atributos();
+}
 
 
 class Conteudo{
@@ -34,7 +46,7 @@ class Conteudo{
     }
 }
 
-class Filme extends Conteudo{
+class Filme extends Conteudo implements atributos{
     int anoLancamento;
     int duracaoEstimada;
     Diretor diretor;
@@ -48,10 +60,13 @@ class Filme extends Conteudo{
         this.duracaoEstimada = duracaoEstimada;   
         this.diretor = diretor;
         diretor.filmesDirigidos.add(this);
+        for (Ator ator : atores) {
+            ator.filmes.add(this);
+        }
     }
 
     public String toString() {
-        return String.format("%s direção: (%d) %s",this.titulo, 
+        return String.format("\"%s\" direção: (%d) %s",this.titulo, 
                 diretor.id, diretor.nome);
     }
 
@@ -60,20 +75,42 @@ class Filme extends Conteudo{
             System.out.println(i);
         }
     }
+
+    public void atributos() {
+        System.out.println(this.titulo);
+        System.out.println("direção :" + this.diretor.nome);
+        System.out.println("nota: " + this.avaliacaoMedia);
+        System.out.println(String.format("faixa etária: %s", 
+                this.faixaEtaria == 0 ? "livre" : this.faixaEtaria
+                ));
+        System.out.println("ano de lançamento: " + this.anoLancamento);
+        System.out.println("duração em minutos: " + this.duracaoEstimada);
+    }
 }
-class Serie extends Conteudo{
-    Date anoInicio;
-    Date anoTermino;
+class Serie extends Conteudo implements atributos{
+    int anoInicio;
+    int anoTermino;
     int qtdTemporadas;
 
     public Serie(String titulo, int faixaEtaria, 
-            float avaliacaoMedia, Date anoInicio, Date anoTermino, int qtdTemporadas,
+            float avaliacaoMedia, int anoInicio, int anoTermino, int qtdTemporadas,
             List<Ator> atores, int id)
     {
         super(titulo, faixaEtaria, avaliacaoMedia, atores, id);
         this.anoInicio = anoInicio;
         this.anoTermino = anoTermino;
         this.qtdTemporadas = qtdTemporadas;
+    }
+
+    public void atributos() {
+        System.out.println(this.titulo);
+        System.out.println("nota: " + this.avaliacaoMedia);
+        System.out.println(String.format("faixa etária: %s", 
+                this.faixaEtaria == 0 ? "livre" : this.faixaEtaria
+                ));
+        System.out.println("temporadas :" + this.qtdTemporadas);
+        System.out.println("ano de inicio: " + this.anoInicio);
+        System.out.println("ano de termino" + this.anoTermino);
     }
 }
 //-------------- Pessoas (ou Famosos) ------------------------------------//
@@ -97,12 +134,13 @@ class Individuo{
     }
 }
 
-class Ator extends Individuo {
+class Ator extends Individuo implements atributos {
 
     List<Filme> filmes;
 
     Ator(String nome, Gender genero, int idade, String paisDeOrigem, int id) {
         super(nome, genero, idade, paisDeOrigem, id);
+        this.filmes = new ArrayList<Filme>();
     }
 
     public String toString() {
@@ -110,9 +148,21 @@ class Ator extends Individuo {
                 this.genero == Gender.M ? "Homem" : "Mulher", this.idade);
     }
 
+    public void atributos() {
+        System.out.println(this.nome);
+        System.out.println(this.genero == Gender.M ? "Homem" : "Mulher");
+        System.out.println(this.idade + " anos");
+        System.out.println("pais de origem: " + this.paisDeOrigem);
+        System.out.println("id: " + this.id);
+        System.out.println("filmes estreiados: ");
+        for (Filme i : this.filmes) {
+            System.out.println(i);
+        }
+    }
+
 }
 
-class Diretor extends Individuo {
+class Diretor extends Individuo implements atributos{
 
     List<Filme> filmesDirigidos;
 
@@ -129,9 +179,21 @@ class Diretor extends Individuo {
         System.out.println(String.format("media da avaliação de filmes: %f", media));
     }
 
+    public void atributos() {
+        System.out.println(this.nome);
+        System.out.println(this.genero == Gender.M ? "Homem" : "Mulher");
+        System.out.println(this.idade + " anos");
+        System.out.println("pais de origem: " + this.paisDeOrigem);
+        System.out.println("id: " + this.id);
+        System.out.println("filmes dirigidos: ");
+        for (Filme i : this.filmesDirigidos) {
+            System.out.println(i);
+        }
+    }
+
 }
 
-class Usuario {
+class Usuario implements atributos {
     String nome;
     String senha;
     String email;
@@ -159,6 +221,22 @@ class Usuario {
                 );
     }
 
+    public void atributos() {
+        System.out.println(this.nome);
+        System.out.println("senha: " + this.senha);
+        System.out.println("idade: " + this.idade);
+        System.out.println("data de registro: " + this.registro);
+        for (Comentario comentario : this.comentarios) {
+            System.out.println(comentario);
+        }
+        for (Avaliacao avaliacao : this.avaliacoes) {
+            System.out.println(avaliacao);
+        }
+        for (Review review : this.reviews) {
+            System.out.println(review);
+        }
+    }
+
 }
 
 class Edicao {
@@ -173,13 +251,22 @@ class Edicao {
     }
 }
 
-class Moderador extends Usuario {
+class Moderador extends Usuario implements atributos {
     List<Edicao> historicoEdicoes;
 
     Moderador(String nome, String senha, int idade, String email, Date registro)
     {
         super(nome, senha, idade, email, registro);
         this.historicoEdicoes = new ArrayList<Edicao>();
+    }
+    public void atributos() {
+        System.out.println(this.nome);
+        System.out.println("senha: " + this.senha);
+        System.out.println("idade: " + this.idade);
+        System.out.println("data de registro: " + this.registro);
+        for (Edicao edicao : this.historicoEdicoes) {
+            System.out.println(edicao);
+        }
     }
 }
 
@@ -192,7 +279,7 @@ class Moderador extends Usuario {
 //     }
 // }
 
-class Avaliacao {
+class Avaliacao implements atributos {
     Filme filme;
     Usuario usuario;
     float nota;
@@ -202,6 +289,13 @@ class Avaliacao {
         this.usuario = usuario;
         this.nota = nota;
     }
+
+    public void atributos() {
+        System.out.println("filme: " + this.filme.titulo);
+        System.out.println("usuario: " + this.usuario.nome);
+        System.out.println("nota: " + this.nota);
+    }
+
 }
 
 class Postagem {
@@ -225,7 +319,7 @@ class Comentario extends Postagem {
     }
 }
 
-class Review extends Postagem {
+class Review extends Postagem implements atributos {
     float avaliacao;
     List<Comentario> comentarios;
 
@@ -233,6 +327,13 @@ class Review extends Postagem {
         super(usuario, texto, data);
         this.avaliacao = avaliacao;
         this.comentarios = new ArrayList<Comentario>();
+    }
+
+    public void atributos() {
+        System.out.println(this.texto);
+        System.out.println(this.usuario.nome);
+        System.out.println(this.data);
+        System.out.println("nota: " + this.avaliacao);
     }
 }
 
@@ -370,7 +471,7 @@ class main {
             List<Ator> filmeAtores = atores.stream()
                 .limit(rand.nextInt(atores.size()))
                 .collect(Collectors.toList());
-    
+
             filmes.add(new Filme(titulo, faixaEtaria, avaliacao, ano, duracao,
                         filmeAtores, diretor, i));
         }
@@ -380,6 +481,10 @@ class main {
         Scanner scan = new Scanner(System.in);
         int input;
 
+        var usuario = new Usuario("joãozinho123", "123456789", 12, 
+                "jaobomzao@gmail.com", new Date((long) 1600745024 * 1000));
+        var moderador = new Moderador("alberto_rosa32", "8dn28dj0", 31, 
+                "alberto_rosa@hotmail.com", new Date((long) 1505744902 * 1000));
         System.out.println("1 para mostrar atributos de classes");
         System.out.println("2 para selecionar metodos operacionas");
 
@@ -388,12 +493,39 @@ class main {
         System.out.println();
         switch (input) {
             case 1: // mostrar atributos de classes
-                    System.out.println("selecionar classe (1 até 10): ");
+                    System.out.println("selecionar classe: ");
+                    System.out.println("(1) filmes");
+                    System.out.println("(2) series");
+                    System.out.println("(3) ator");
+                    System.out.println("(4) diretor");
+                    System.out.println("(5) usuarios");
+                    System.out.println("(6) moderador");
+                    System.out.println("(7) avaliação");
+                    System.out.println("(8) review");
                     System.out.print("input: ");
                     input = scan.nextInt();
                     System.out.println();
-                    switch (input) {
+                    // esse é um exemplo bem abstrato (e gambiarra) de polimorfismo.
+                    // todas os objetos nessa lista são diferentes e implementam
+                    // a interface "atributos" que tem apenas um método que
+                    // mostra os atributos de cada classe.
+                    var classes = new atributos[]{
+                        filmes.get(0),
+                        new Serie("Breaking Bad", 16, 9.1f, 2010, 2014, 5, null, 1),
+                        atores.get(0),
+                        diretores.get(0),
+                        usuario,
+                        moderador,
+                        new Avaliacao(filmes.get(0), usuario, 10),
+                        new Review(usuario, "achei o filme muito bom! nota 10!", 
+                                new Date((long) 1600755257 * 1000), 10),
+                    };
+                    if (input > classes.length) {
+                        System.out.println("metodo não reconhecido: " + input);
+                        System.exit(1);
+                        break;
                     }
+                    classes[input-1].atributos();
                 break;
             case 2: // selecionar métodos operacionais
                     System.out.println("selecionar metodo operacional:");
