@@ -37,21 +37,21 @@ class Conteudo{
 
 class Filme extends Conteudo{
     int anoLancamento;
-    boolean bilheteria;
     int duracaoEstimada;
+    Diretor diretor;
 
     public Filme(String titulo, String genero, int faixaEtaria, float avaliacaoMedia,
-            int anoLancamento, boolean bilheteria, int duracaoEstimada, 
-            List<Ator> atores)
+            int anoLancamento, int duracaoEstimada, 
+            List<Ator> atores, Diretor diretor)
     {
         super(titulo, genero, faixaEtaria, avaliacaoMedia, atores);
         this.anoLancamento = anoLancamento;
-        this.bilheteria = bilheteria;
         this.duracaoEstimada = duracaoEstimada;   
+        this.diretor = diretor;
     }
 
     public String toString() {
-        return this.titulo;
+        return String.format("%s direção: %s",this.titulo, diretor.nome);
     }
 
     public void listarAtores() {
@@ -283,6 +283,7 @@ class main {
         // ler datasets
         var filmesCSV = lerCsv("filmes.csv");
         var atoresCSV = lerCsv("atores.csv");
+        var diretoresCSV = lerCsv("diretores.csv");
 
         var atores = new ArrayList<Ator>();
 
@@ -294,9 +295,9 @@ class main {
             String[] colunas = linha.split(",");
 
             // formato do csv:
-            // nome|genero|idade|pais
+            // nome,genero,idade,pais
             String nome = colunas[0];
-            Gender genero = colunas[1].equals("m") ? Gender.M : Gender.F;
+            Gender genero = colunas[1].equals("M") ? Gender.M : Gender.F;
             int idade = Integer.parseInt(colunas[2]);
             String pais = colunas[3];
 
@@ -318,16 +319,26 @@ class main {
             String titulo = colunas[0];
             int ano = Integer.parseInt(colunas[1]);
             int duracao = Integer.parseInt(colunas[2]); // duração em minutos
-            int idade = Integer.parseInt(colunas[3]);
+            int faixaEtaria = Integer.parseInt(colunas[3]);
             float avaliacao = Float.parseFloat(colunas[4]);
+
+            linha = diretoresCSV.get(i);
+            colunas = linha.split(",");
+
+            String nome = colunas[0];
+            Gender genero = colunas[1].equals("M") ? Gender.M : Gender.F;
+            int idade = Integer.parseInt(colunas[2]);
+            String pais = colunas[3];
+    
+            var diretor = new Diretor(nome, genero, idade, pais);
 
             Collections.shuffle(atores);
             List<Ator> filmeAtores = atores.stream()
                 .limit(rand.nextInt(atores.size()))
                 .collect(Collectors.toList());
     
-            filmes.add(new Filme(titulo, "", idade, avaliacao, ano, false, duracao,
-                        filmeAtores));
+            filmes.add(new Filme(titulo, "", faixaEtaria, avaliacao, ano, duracao,
+                        filmeAtores, diretor));
         }
 
 
