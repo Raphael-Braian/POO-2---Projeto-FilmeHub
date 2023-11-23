@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 // import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 
 class Conteudo{
@@ -14,15 +17,17 @@ class Conteudo{
     String genero;
     int faixaEtaria;
     float avaliacaoMedia;
+    List<Ator> atores;
     //Considerar acrescentar uma variavel lista de atores//
 
     public Conteudo(String titulo, String genero, int faixaEtaria,
-            float avaliacaoMedia)
+            float avaliacaoMedia, List<Ator> atores)
     {
         this.titulo = titulo;
         this.genero = genero;
         this.faixaEtaria = faixaEtaria;
         this.avaliacaoMedia = avaliacaoMedia;
+        this.atores = atores;
     }
 
     public String toString() {
@@ -36,12 +41,23 @@ class Filme extends Conteudo{
     int duracaoEstimada;
 
     public Filme(String titulo, String genero, int faixaEtaria, float avaliacaoMedia,
-            int anoLancamento, boolean bilheteria, int duracaoEstimada)
+            int anoLancamento, boolean bilheteria, int duracaoEstimada, 
+            List<Ator> atores)
     {
-        super(titulo, genero, faixaEtaria, avaliacaoMedia);
+        super(titulo, genero, faixaEtaria, avaliacaoMedia, atores);
         this.anoLancamento = anoLancamento;
         this.bilheteria = bilheteria;
         this.duracaoEstimada = duracaoEstimada;   
+    }
+
+    public String toString() {
+        return this.titulo;
+    }
+
+    public void listarAtores() {
+        for (Ator i : this.atores) {
+            System.out.println(i);
+        }
     }
 }
 class Serie extends Conteudo{
@@ -50,9 +66,10 @@ class Serie extends Conteudo{
     int qtdTemporadas;
 
     public Serie(String titulo, String genero, int faixaEtaria, 
-            float avaliacaoMedia, Date anoInicio, Date anoTermino, int qtdTemporadas)
+            float avaliacaoMedia, Date anoInicio, Date anoTermino, int qtdTemporadas,
+            List<Ator> atores)
     {
-        super(titulo, genero, faixaEtaria, avaliacaoMedia);
+        super(titulo, genero, faixaEtaria, avaliacaoMedia, atores);
         this.anoInicio = anoInicio;
         this.anoTermino = anoTermino;
         this.qtdTemporadas = qtdTemporadas;
@@ -65,22 +82,29 @@ enum Gender{M,F};
 class Individuo{
     String nome;
     Gender genero;
-    Date nascimento;
+    int idade;
     String paisDeOrigem;
 
-    public Individuo(String nome, Gender genero, Date nascimento, String paisDeOrigem)
+    public Individuo(String nome, Gender genero, int idade, String paisDeOrigem)
     {
         this.nome = nome;
         this.genero = Gender.M;
-        this.nascimento = nascimento;
+        this.idade = idade;
         this.paisDeOrigem = paisDeOrigem;
     }
 }
 
 class Ator extends Individuo {
 
-    Ator(String nome, Gender genero, Date nascimento, String paisDeOrigem) {
-        super(nome, genero, nascimento, paisDeOrigem);
+    List<Filme> filmes;
+
+    Ator(String nome, Gender genero, int idade, String paisDeOrigem) {
+        super(nome, genero, idade, paisDeOrigem);
+    }
+
+    public String toString() {
+        return String.format("%s, %s, %d anos", this.nome, 
+                this.genero == Gender.M ? "Homem" : "Mulher", this.idade);
     }
 
 }
@@ -89,8 +113,8 @@ class Diretor extends Individuo {
 
     List<Filme> filmesDirigidos;
 
-    Diretor(String nome, Gender genero, Date nascimento, String paisDeOrigem) {
-        super(nome, genero, nascimento, paisDeOrigem);
+    Diretor(String nome, Gender genero, int idade, String paisDeOrigem) {
+        super(nome, genero, idade, paisDeOrigem);
         this.filmesDirigidos = new ArrayList<Filme>();
     }
 
@@ -149,13 +173,13 @@ class Moderador extends Usuario {
 }
 
 // o que por aqui?
-class Critico extends Usuario {
-
-    Critico(String nome, String senha, int idade, String email, Date registro) 
-    { 
-        super(nome, senha, idade, email, registro);
-    }
-}
+// class Critico extends Usuario {
+//
+//     Critico(String nome, String senha, int idade, String email, Date registro) 
+//     { 
+//         super(nome, senha, idade, email, registro);
+//     }
+// }
 
 class Avaliacao {
     Filme filme;
@@ -247,39 +271,38 @@ class main {
         return linhas;
     }
 
+    // public static List<Individuo> lerIndividuo() {
+    //     
+    // }
+
     public static void main(String[] args) {
         System.out.println("hello world");
 
+        var rand = new Random();
+
         // ler datasets
-        var usuariosCSV = lerCsv("usuarios.csv");
         var filmesCSV = lerCsv("filmes.csv");
+        var atoresCSV = lerCsv("atores.csv");
 
-        var usuarios = new ArrayList<Usuario>();
+        var atores = new ArrayList<Ator>();
 
-        // salvar todos os usuarios em uma lista
-        for (int i = 1; i < usuariosCSV.size(); i++)
+        // salvar todos os filmes em uma lista
+        for (int i = 1; i < atoresCSV.size(); i++)
         {
-            String linha = usuariosCSV.get(i);
+            String linha = atoresCSV.get(i);
             // separa linha pelas virgulas
             String[] colunas = linha.split(",");
 
             // formato do csv:
-            // nome,idade,senha,email,registro
+            // nome|genero|idade|pais
             String nome = colunas[0];
-            String senha = colunas[1];
+            Gender genero = colunas[1].equals("m") ? Gender.M : Gender.F;
             int idade = Integer.parseInt(colunas[2]);
-            String email = colunas[3];
+            String pais = colunas[3];
 
-            Date registro = new Date((long) Integer.parseInt(colunas[4]) * 1000);
-            // O construtor de Date aceita unix timestamp em milisegundos para 
-            // definir uma data.
-            // unix timestamp é definido pelo numero de segundos desde primeiro 
-            // de janeiro de 1970
-            // https://www.unixtimestamp.com/index.php
-
-            usuarios.add(new Usuario(nome, senha, idade, email, registro));
+    
+            atores.add(new Ator(nome, genero, idade, pais));
         }
-
 
         var filmes = new ArrayList<Filme>();
 
@@ -298,13 +321,21 @@ class main {
             int idade = Integer.parseInt(colunas[3]);
             float avaliacao = Float.parseFloat(colunas[4]);
 
+            Collections.shuffle(atores);
+            List<Ator> filmeAtores = atores.stream()
+                .limit(rand.nextInt(atores.size()))
+                .collect(Collectors.toList());
     
-            filmes.add(new Filme(titulo, "", idade, avaliacao, ano, false, duracao));
+            filmes.add(new Filme(titulo, "", idade, avaliacao, ano, false, duracao,
+                        filmeAtores));
         }
 
 
-        var filmesRank = new FilmeRank(filmes);
 
-        filmesRank.filtrarPorIdade(12);
+        for (Filme i : filmes) {
+            System.out.println(i);
+            i.listarAtores();
+        }
+
     }
 }
