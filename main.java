@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-// import java.util.Scanner;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +47,7 @@ class Filme extends Conteudo{
         this.anoLancamento = anoLancamento;
         this.duracaoEstimada = duracaoEstimada;   
         this.diretor = diretor;
+        diretor.filmesDirigidos.add(this);
     }
 
     public String toString() {
@@ -255,9 +256,12 @@ class FilmeRank implements Rank {
         }
     }
     public void filtrarPorIdade(int idade) {
-        for (Filme i : this.filmes) {
-            if (i.faixaEtaria < idade) {
-                System.out.println(i);
+        for (Filme filme : this.filmes) {
+            if (filme.faixaEtaria < idade) {
+                System.out.println(String.format("%s idade: %s",
+                            filme.titulo, 
+                            filme.faixaEtaria == 0 ? "livre" : filme.faixaEtaria
+                            ));
             }
         }
     }
@@ -299,7 +303,7 @@ class main {
     }
 
     public static void main(String[] args) {
-        System.out.println("hello world");
+        // System.out.println("hello world");
 
         var rand = new Random(1);
 
@@ -372,14 +376,68 @@ class main {
         }
 
         var rank = new FilmeRank(filmes);
-        
-        // rank.diretorAtorFilmes(47, 8);
-        rank.mostrarTodosFilmesAtores();
 
-        // for (Filme i : filmes) {
-        //     System.out.println(i);
-        //     i.listarAtores();
-        // }
+        Scanner scan = new Scanner(System.in);
+        int input;
+
+        System.out.println("1 para mostrar atributos de classes");
+        System.out.println("2 para selecionar metodos operacionas");
+
+        System.out.print("input: ");
+        input = scan.nextInt();
+        System.out.println();
+        switch (input) {
+            case 1: // mostrar atributos de classes
+                    System.out.println("selecionar classe (1 até 10): ");
+                    System.out.print("input: ");
+                    input = scan.nextInt();
+                    System.out.println();
+                    switch (input) {
+                    }
+                break;
+            case 2: // selecionar métodos operacionais
+                    System.out.println("selecionar metodo operacional:");
+                    System.out.println("1 para mostrar todos os filmes junto com atores");
+                    System.out.println("2 para filtrar filmes por idade");
+                    System.out.println("3 para procurar quais filmes diretor fez com ator");
+                    System.out.print("input: ");
+                    input = scan.nextInt();
+                    System.out.println();
+                    switch (input) {
+                        case 1:
+                            System.out.println("todos os filmes e seus atores:");
+                            rank.mostrarTodosFilmesAtores();
+                            break;
+                        case 2:
+                            System.out.print("idade: ");
+                            input = scan.nextInt();
+                            System.out.println();
+                            System.out.println("filmes para menores de " 
+                                    + input + " anos:");
+                            rank.filtrarPorIdade(input);
+                            System.out.println("os filmes acima são para menores de " 
+                                    + input + " anos");
+                            break;
+                        case 3:
+                            System.out.print("id do diretor (1-249): ");
+                            var diretor = scan.nextInt();
+                            System.out.print(String.format("id do ator (1-%d): ", 
+                                        atores.size()));
+                            var ator = scan.nextInt();
+                            System.out.println();
+                            System.out.println("filmes que diretor fez com ator");
+                            rank.diretorAtorFilmes(diretor, ator);
+                            break;
+                        default:
+                            System.out.println("metodo não reconhecido: " + input);
+                            System.exit(1);
+                            break;
+                    }
+                break;
+            default:
+                System.out.println("metodo não reconhecido: " + input);
+                System.exit(1);
+        }
 
     }
 }
