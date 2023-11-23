@@ -14,17 +14,16 @@ import java.util.stream.Collectors;
 
 class Conteudo{
     String titulo;
-    String genero;
     int faixaEtaria;
     float avaliacaoMedia;
     List<Ator> atores;
+    int id;
     //Considerar acrescentar uma variavel lista de atores//
 
-    public Conteudo(String titulo, String genero, int faixaEtaria,
-            float avaliacaoMedia, List<Ator> atores)
+    public Conteudo(String titulo, int faixaEtaria,
+            float avaliacaoMedia, List<Ator> atores, int id)
     {
         this.titulo = titulo;
-        this.genero = genero;
         this.faixaEtaria = faixaEtaria;
         this.avaliacaoMedia = avaliacaoMedia;
         this.atores = atores;
@@ -40,18 +39,19 @@ class Filme extends Conteudo{
     int duracaoEstimada;
     Diretor diretor;
 
-    public Filme(String titulo, String genero, int faixaEtaria, float avaliacaoMedia,
+    public Filme(String titulo, int faixaEtaria, float avaliacaoMedia,
             int anoLancamento, int duracaoEstimada, 
-            List<Ator> atores, Diretor diretor)
+            List<Ator> atores, Diretor diretor, int id)
     {
-        super(titulo, genero, faixaEtaria, avaliacaoMedia, atores);
+        super(titulo, faixaEtaria, avaliacaoMedia, atores, id);
         this.anoLancamento = anoLancamento;
         this.duracaoEstimada = duracaoEstimada;   
         this.diretor = diretor;
     }
 
     public String toString() {
-        return String.format("%s direção: %s",this.titulo, diretor.nome);
+        return String.format("%s direção: (%d) %s",this.titulo, 
+                diretor.id, diretor.nome);
     }
 
     public void listarAtores() {
@@ -65,11 +65,11 @@ class Serie extends Conteudo{
     Date anoTermino;
     int qtdTemporadas;
 
-    public Serie(String titulo, String genero, int faixaEtaria, 
+    public Serie(String titulo, int faixaEtaria, 
             float avaliacaoMedia, Date anoInicio, Date anoTermino, int qtdTemporadas,
-            List<Ator> atores)
+            List<Ator> atores, int id)
     {
-        super(titulo, genero, faixaEtaria, avaliacaoMedia, atores);
+        super(titulo, faixaEtaria, avaliacaoMedia, atores, id);
         this.anoInicio = anoInicio;
         this.anoTermino = anoTermino;
         this.qtdTemporadas = qtdTemporadas;
@@ -84,13 +84,15 @@ class Individuo{
     Gender genero;
     int idade;
     String paisDeOrigem;
+    int id; 
 
-    public Individuo(String nome, Gender genero, int idade, String paisDeOrigem)
+    public Individuo(String nome, Gender genero, int idade, String paisDeOrigem, int id)
     {
         this.nome = nome;
         this.genero = Gender.M;
         this.idade = idade;
         this.paisDeOrigem = paisDeOrigem;
+        this.id = id;
     }
 }
 
@@ -98,12 +100,12 @@ class Ator extends Individuo {
 
     List<Filme> filmes;
 
-    Ator(String nome, Gender genero, int idade, String paisDeOrigem) {
-        super(nome, genero, idade, paisDeOrigem);
+    Ator(String nome, Gender genero, int idade, String paisDeOrigem, int id) {
+        super(nome, genero, idade, paisDeOrigem, id);
     }
 
     public String toString() {
-        return String.format("%s, %s, %d anos", this.nome, 
+        return String.format("(%d) %s, %s, %d anos", this.id, this.nome, 
                 this.genero == Gender.M ? "Homem" : "Mulher", this.idade);
     }
 
@@ -113,9 +115,17 @@ class Diretor extends Individuo {
 
     List<Filme> filmesDirigidos;
 
-    Diretor(String nome, Gender genero, int idade, String paisDeOrigem) {
-        super(nome, genero, idade, paisDeOrigem);
+    Diretor(String nome, Gender genero, int idade, String paisDeOrigem, int id) {
+        super(nome, genero, idade, paisDeOrigem, id);
         this.filmesDirigidos = new ArrayList<Filme>();
+    }
+
+    public void mediaFilmes() {
+        float media = 0;
+        for (Filme filme : this.filmesDirigidos) {
+            media += filme.avaliacaoMedia;
+        }
+        System.out.println(String.format("media da avaliação de filmes: %f", media));
     }
 
 }
@@ -235,15 +245,32 @@ class FilmeRank implements Rank {
     FilmeRank(ArrayList<Filme> filmes) {
         this.filmes = filmes;
     }
-    public void mostrarTodosFilmes() {
-        for (Filme i : this.filmes) {
-            System.out.println(i);
+    public void mostrarTodosFilmesAtores() {
+        for (Filme filme : this.filmes) {
+            System.out.println(filme);
+            for (Ator ator : filme.atores) {
+                System.out.println("\t" + ator);
+                
+            }
         }
     }
     public void filtrarPorIdade(int idade) {
         for (Filme i : this.filmes) {
             if (i.faixaEtaria < idade) {
                 System.out.println(i);
+            }
+        }
+    }
+
+    public void diretorAtorFilmes(int diretor, int atorAlvo) {
+        for (Filme filme : this.filmes) {
+            if (filme.diretor.id != diretor) {
+                continue;
+            }
+            for (Ator ator : filme.atores) {
+                if (ator.id == atorAlvo) {
+                    System.out.println(filme);
+                }
             }
         }
     }
@@ -271,14 +298,10 @@ class main {
         return linhas;
     }
 
-    // public static List<Individuo> lerIndividuo() {
-    //     
-    // }
-
     public static void main(String[] args) {
         System.out.println("hello world");
 
-        var rand = new Random();
+        var rand = new Random(1);
 
         // ler datasets
         var filmesCSV = lerCsv("filmes.csv");
@@ -302,7 +325,22 @@ class main {
             String pais = colunas[3];
 
     
-            atores.add(new Ator(nome, genero, idade, pais));
+            atores.add(new Ator(nome, genero, idade, pais, i));
+        }
+
+        var diretores = new ArrayList<Diretor>();
+
+        for (int i = 1; i < diretoresCSV.size(); i++)
+        {
+            String linha = diretoresCSV.get(i);
+            String[] colunas = linha.split(",");
+
+            String nome = colunas[0];
+            Gender genero = colunas[1].equals("M") ? Gender.M : Gender.F;
+            int idade = Integer.parseInt(colunas[2]);
+            String pais = colunas[3];
+    
+            diretores.add(new Diretor(nome, genero, idade, pais, i));
         }
 
         var filmes = new ArrayList<Filme>();
@@ -322,31 +360,26 @@ class main {
             int faixaEtaria = Integer.parseInt(colunas[3]);
             float avaliacao = Float.parseFloat(colunas[4]);
 
-            linha = diretoresCSV.get(i);
-            colunas = linha.split(",");
+            var diretor = diretores.get(rand.nextInt(diretores.size() -1 ));
 
-            String nome = colunas[0];
-            Gender genero = colunas[1].equals("M") ? Gender.M : Gender.F;
-            int idade = Integer.parseInt(colunas[2]);
-            String pais = colunas[3];
-    
-            var diretor = new Diretor(nome, genero, idade, pais);
-
-            Collections.shuffle(atores);
+            Collections.shuffle(atores, rand);
             List<Ator> filmeAtores = atores.stream()
                 .limit(rand.nextInt(atores.size()))
                 .collect(Collectors.toList());
     
-            filmes.add(new Filme(titulo, "", faixaEtaria, avaliacao, ano, duracao,
-                        filmeAtores, diretor));
+            filmes.add(new Filme(titulo, faixaEtaria, avaliacao, ano, duracao,
+                        filmeAtores, diretor, i));
         }
 
+        var rank = new FilmeRank(filmes);
+        
+        // rank.diretorAtorFilmes(47, 8);
+        rank.mostrarTodosFilmesAtores();
 
-
-        for (Filme i : filmes) {
-            System.out.println(i);
-            i.listarAtores();
-        }
+        // for (Filme i : filmes) {
+        //     System.out.println(i);
+        //     i.listarAtores();
+        // }
 
     }
 }
