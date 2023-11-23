@@ -1,106 +1,166 @@
+Conteudo -> Filme: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+}
+Conteudo -> Serie: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+}  
+Filme <-> Diretor {
+    source-arrowhead: * 
+    target-arrowhead: 1 
+}
+Filme <-> Ator {
+        source-arrowhead: *
+        target-arrowhead: *
+}  
+Usuario <-> Review {
+        source-arrowhead: 1
+        target-arrowhead: *
+}
+Usuario <-> Avaliacao {
+        source-arrowhead: 1
+        target-arrowhead: *
+}
+Usuario <-> Comentario {
+        source-arrowhead: 1
+        target-arrowhead: *
+}
+Moderador <-> Edicao {
+        source-arrowhead: 1
+        target-arrowhead: *
+}
+Individuo -> Ator: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+} 
+Individuo -> Diretor: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+} 
+Postagem -> Review: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+}
+Postagem -> Comentario: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+}
+Usuario -> Moderador: extend {
+    target-arrowhead {
+        shape: diamond
+    }
+}
+
 Filme {
     shape: class
-    -anoLancamento: Date
+    +anoLancamento: int
+    +diretor: Diretor
+    +duracaoEstimada: int
+
+    +listarAtores(): void
+    +atributos(): void
 }
 
 Serie {
     shape: class
-    -anoInicio: Date
-    -anoTermino: Date
+    +anoInicio: int
+    +anoTermino: int
+    +qtdTemporadas: int
+
+    +atributos(): void
 }
 
 Conteudo {
     shape: class
-    -titulo: String
-    -genero: String
+    +titulo: String
+    +faixaEtaria: int
+    +avaliacaoMedia: float
+    +atores: List<Ator>
+    +id: int
 }
 
-Conteudo -> Filme
-Conteudo -> Serie  
-
-Pessoa {
+Individuo {
     shape: class
-    -nome: String
-    -nascimento: Date
-    -paisOrigem: String
-    -filmes: List<Filme>
+    +nome: String
+    +idade: int
+    +paisOrigem: String
+    +id: int
 }
 
 Diretor {
     shape: class
-    dirigidos
+    +filmesDirigidos: List<Filme>
+
+    +mediaFilmes(): void
+    +atributos(): void
 }
 
 Ator {
     shape: class
+    +filmes: List<Filme>
+    +atributos(): void
 }
-
-Pessoa -> Ator 
-Pessoa -> Diretor 
-
 
 Usuario {
     shape: class
-    -nome: String
-    -senha: String
-    -email: String
-    -dataRegistro: Date
-    -reviews: List<Review>
-    -Avaliacoes: List<Avaliacao>
-    -comentarios: List<Comentario>
-}
+    +nome: String
+    +senha: String
+    +email: String
+    +registro: Date
+    +reviews: List<Review>
+    +Avaliacoes: List<Avaliacao>
+    +comentarios: List<Comentario>
 
-Usuario -> Avaliacao
-Usuario -> Review
+    +atributos(): void
+}
 
 Avaliacao {
     shape: class
-    -valor: int
+    +filme: Filme
+    +usuario: Usuario
+    +nota: float
+
+    +atributos(): void
 }
 
 Moderador {
     shape: class
-    -historicoEdicoes: List<Edicao>
-}
+    +historicoEdicoes: List<Edicao>
 
-Critico {
-    shape: class
+    +atributos(): void
 }
 
 Edicao {
     shape: class
-    -moderador: Moderador
-    -alvo: Conteudo
-    -diff: String
+    +moderador: Moderador
+    +alvo: Conteudo
+    +diff: String
 }
 
 Postagem {
     shape: class
-    -usuario: Usuario
-    -texto: String
-    -date: Date
+    +usuario: Usuario
+    +texto: String
+    +date: Date
 }
 
 Review {
     shape: class
-    -nota: int
-    -comentarios: List<comentarios>
+    +avaliacao: int
+    +comentarios: List<comentarios>
+
+    +atributos(): void
 }
 
 Comentario {
     shape: class
+    +review: Review
 }
 
-Postagem -> Review
-Postagem -> Comentario
-
-Moderador -> Usuario
-Critico -> Usuario
-
-Moderador -> Edicao
-
-Rank {
-    shape: class
-    -top: List<conteudo>
-    -ultimaAtualizacao: Date
-}

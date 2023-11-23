@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 
+// interface para mostrar atributos
 interface atributos {
     public void atributos();
 }
@@ -30,7 +31,6 @@ class Conteudo{
     float avaliacaoMedia;
     List<Ator> atores;
     int id;
-    //Considerar acrescentar uma variavel lista de atores//
 
     public Conteudo(String titulo, int faixaEtaria,
             float avaliacaoMedia, List<Ator> atores, int id)
@@ -39,6 +39,7 @@ class Conteudo{
         this.faixaEtaria = faixaEtaria;
         this.avaliacaoMedia = avaliacaoMedia;
         this.atores = atores;
+        this.id = id;
     }
 
     public String toString() {
@@ -239,6 +240,7 @@ class Usuario implements atributos {
 
 }
 
+// moderadores fazem edições em filmes e series
 class Edicao {
     Moderador moderador;
     Conteudo alvo;
@@ -270,15 +272,7 @@ class Moderador extends Usuario implements atributos {
     }
 }
 
-// o que por aqui?
-// class Critico extends Usuario {
-//
-//     Critico(String nome, String senha, int idade, String email, Date registro) 
-//     { 
-//         super(nome, senha, idade, email, registro);
-//     }
-// }
-
+// usuarios avaliam filmes e series
 class Avaliacao implements atributos {
     Filme filme;
     Usuario usuario;
@@ -298,7 +292,8 @@ class Avaliacao implements atributos {
 
 }
 
-class Postagem {
+// classe abstrata que abranje alguns atributos de review e comentario
+abstract class Postagem {
     Usuario usuario;
     String texto;
     Date data;
@@ -337,6 +332,7 @@ class Review extends Postagem implements atributos {
     }
 }
 
+// pensamos em criar um rank para series também mas acabou que ficamos sem tempo :)
 interface Rank {
     public void filtrarPorIdade(int idade);
 }
@@ -384,7 +380,7 @@ class FilmeRank implements Rank {
 
 class main {
 
-    // le qualquer csv
+    // ler csv
     public static List<String> lerCsv(String arquivo) {
         List<String> linhas = new ArrayList<String>();
         try {
@@ -406,16 +402,17 @@ class main {
     public static void main(String[] args) {
         // System.out.println("hello world");
 
+        // isso faz com que os resultados aleatorios sempre sejam os mesmos
         var rand = new Random(1);
 
-        // ler datasets
+        // ler todos os dados necessarios
         var filmesCSV = lerCsv("filmes.csv");
         var atoresCSV = lerCsv("atores.csv");
         var diretoresCSV = lerCsv("diretores.csv");
 
+        // salvar todos os atores em uma lista
         var atores = new ArrayList<Ator>();
 
-        // salvar todos os filmes em uma lista
         for (int i = 1; i < atoresCSV.size(); i++)
         {
             String linha = atoresCSV.get(i);
@@ -425,6 +422,7 @@ class main {
             // formato do csv:
             // nome,genero,idade,pais
             String nome = colunas[0];
+            // traduzir para enum
             Gender genero = colunas[1].equals("M") ? Gender.M : Gender.F;
             int idade = Integer.parseInt(colunas[2]);
             String pais = colunas[3];
@@ -435,6 +433,7 @@ class main {
 
         var diretores = new ArrayList<Diretor>();
 
+        // salvar todos os diretores em uma lista
         for (int i = 1; i < diretoresCSV.size(); i++)
         {
             String linha = diretoresCSV.get(i);
@@ -454,7 +453,7 @@ class main {
         for (int i = 1; i < filmesCSV.size(); i++)
         {
             String linha = filmesCSV.get(i);
-            // separa linha pelas virgulas
+            // csv dos filmes é separados por barras
             String[] colunas = linha.split("\\|");
 
             // formato do csv:
@@ -465,8 +464,12 @@ class main {
             int faixaEtaria = Integer.parseInt(colunas[3]);
             float avaliacao = Float.parseFloat(colunas[4]);
 
+            // inventar um diretor pro filme escolhendo algum diretor qualquer
+            // da lista de diretores
             var diretor = diretores.get(rand.nextInt(diretores.size() -1 ));
 
+            // inventar lista de atores 
+            // isso embaralha a lista de atores e pega os N primeiros
             Collections.shuffle(atores, rand);
             List<Ator> filmeAtores = atores.stream()
                 .limit(rand.nextInt(atores.size()))
@@ -476,15 +479,23 @@ class main {
                         filmeAtores, diretor, i));
         }
 
+        // salvar todos os filmes nesse rank
         var rank = new FilmeRank(filmes);
 
         Scanner scan = new Scanner(System.in);
         int input;
 
+        // objetos de demonstração
         var usuario = new Usuario("joãozinho123", "123456789", 12, 
                 "jaobomzao@gmail.com", new Date((long) 1600745024 * 1000));
         var moderador = new Moderador("alberto_rosa32", "8dn28dj0", 31, 
                 "alberto_rosa@hotmail.com", new Date((long) 1505744902 * 1000));
+        var avaliacao = new Avaliacao(filmes.get(0), usuario, 10);
+        var serie = new Serie("Breaking Bad", 16, 9.1f, 2010, 2014, 5, null, 1);
+        var review = new Review(usuario, "achei o filme muito bom! nota 10!", 
+                                new Date((long) 1600755257 * 1000), 10);
+
+
         System.out.println("1 para mostrar atributos de classes");
         System.out.println("2 para selecionar metodos operacionas");
 
@@ -511,15 +522,15 @@ class main {
                     // mostra os atributos de cada classe.
                     var classes = new atributos[]{
                         filmes.get(0),
-                        new Serie("Breaking Bad", 16, 9.1f, 2010, 2014, 5, null, 1),
+                        serie,
                         atores.get(0),
                         diretores.get(0),
                         usuario,
                         moderador,
-                        new Avaliacao(filmes.get(0), usuario, 10),
-                        new Review(usuario, "achei o filme muito bom! nota 10!", 
-                                new Date((long) 1600755257 * 1000), 10),
+                        avaliacao,
+                        review,
                     };
+                    // caso input esteja alem do limite
                     if (input > classes.length) {
                         System.out.println("metodo não reconhecido: " + input);
                         System.exit(1);
